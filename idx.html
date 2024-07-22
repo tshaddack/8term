@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="pragma" content="no-cache; charset=utf-8" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OctoControl Terminal</title>
+<style type="text/css">
+
+body {background-color:#FFFFDD}
+
+//td {vertical-align:top;padding:0px;margin:0px}
+p {text-align:justify;margin-bottom:0px}
+td.gchord {font-size:75%;font-weight:bold;padding:0px;margin:0px;padding-top:0px;padding-right:3px;text-align:left;font-family:verdana,arial;color:#888888;position:relative;top:3px}
+td.gtxt {text-align:left}
+.dettitle {border-bottom:1px lightgray dashed}
+.dettitle2 {border-bottom:1px lightgray dashed}
+
+h2 {margin-top:20px; background-color:xgray}
+h3 {background-color:xyellow;margin-top:30px;text-decoration:underline}
+h4 {padding-left:0px;margin-left:0px;text-decoration:underline;color:#333333}
+ul {margin-top:0px;padding-top:0px}
+.ref {color:gray}
+
+.gr {color:gray}
+.grsm {color:gray;font-size:80%}
+.err {color:red;font-weight:bold}
+
+a {text-color:blue;text-decoration:underline}
+a:HOVER {border-bottom:1px blue;color:red}
+a.index {text-decoration:none}
+a.index:HOVER {text-decoration:underline;color:red}
+
+.preFile {background-color:lightgray;padding:0.5em}
+
+td.imgthumb {vertical-align:top;padding:5px;font-size:80%}
+img.ico {width:12px;height:12px;overflow:visible;position:relative;margin-top:-5px}
+.imginc {max-width:100%;max-height:80vh}
+.imginccap {text-align:left;padding-bottom:0.5em}
+
+div.code {margin:0px;padding:0px;padding-left:30px;}
+.code {font-family:courier,fixed;color:green;}
+
+.cmd {font-family:courier,fixed;color:red;background-color:#FFEEDD;font-weight:bold;white-space:pre-wrap;padding-left:0.5em;;padding-right:0.5em;padding-top:0.5em;padding-bottom:0.5em}
+.cmd::first-line {color:darkred;}
+.cmd::before {content:'> ';}
+
+.cmdresp {font-family:courier,fixed;color:blue;background-color:#EEEEFF;white-space:pre-wrap;padding-left:0.5em;;padding-right:0.5em;}
+.cmdresp::first-line {color:darkblue;}
+.cmdresp::before {content:'  ';}
+
+.comm {font-family:courier,fixed;color:red;background-color:#FFEEDD;font-weight:bold;white-space:pre-wrap;padding-left:0.5em;;padding-right:0.5em;}
+.comm::first-line {color:darkred;}
+.comm::before {content:'> ';}
+
+.commresp {font-family:courier,fixed;color:blue;background-color:#EEEEFF;white-space:pre-wrap;padding-left:0.5em;;padding-right:0.5em;}
+.commresp::first-line {color:darkblue;}
+.commresp::before {content:'< ';}
+
+.bang {font-weight:bold;color:red}
+
+
+// unsupported by everything except apple, so far
+//@media screen and (inverted-colors: inverted) {
+//.cmd {background-color:#0000CC;color:lightblue;}
+//.cmd::first-line: {color:blue}
+//.cmdresp {background-color:#CC0000;color:lightred}
+//.cmdresp::first-line: {color:red}
+//}
+
+
+@media print{
+body {font-size:80%}
+.noprint {display:none;visibility:hidden}
+.xnopbr {page-break-inside:avoid}
+td.gchord: {color:black}
+.nopbr {}
+.preFile {background-color:white;border:1px dotted black}
+}
+</style>
+<meta property="og:title" content="OctoControl Terminal" />
+<meta property="og:type" content="website" />
+<meta property="og:x-url" content="http://:" />
+<meta property="og:description" content="8term/8mon, interactive monitoring and controlling of OctoPrint server" />
+<meta property="og:image" content="http://th.8term-screenshot2.png" />
+</head>
+<body>
+<h1>OctoControl Terminal</h1><hr class="noprint" /><div class="noprint"><a title="Click here to enlarge" href="8term-screenshot2.png"><img src="th.8term-screenshot2.png" width="640" height="375" align="right" style="padding-left:20px" />
+</a>
+<a class="index indexlev2" href="#Problem" title="">Problem</a><br /><a class="index indexlev2" href="#Solutionapproach" title="Solution approach">Solution approach</a><br /><a class="index indexlev2" href="#basics" title="basics">basics</a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev3" href="#config" title="basics.config">config</a></small><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev3" href="#websocket" title="basics.websocket">websocket</a></small><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev3" href="#RESTAPI" title="basics.REST API">REST API</a></small><br /><a class="index indexlev2" href="#8mon.py" title="8mon.py">8mon.py</a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev3" href="#usage" title="8mon.py.usage">usage</a></small><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev4" href="#options" title="8mon.py.usage.options">options</a></small><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev4" href="#example" title="8mon.py.usage.example">example</a></small><br /><a class="index indexlev2" href="#8term.py" title="8term.py">8term.py</a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev3" href="#8term.py.usage" title="8term.py.usage">usage</a></small><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev4" href="#8term.py.usage.options" title="8term.py.usage.options">options</a></small><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev4" href="#keys" title="8term.py.usage.keys">keys</a></small><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev4" href="#commands" title="8term.py.usage.commands">commands</a></small><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><a class="index indexlev3" href="#weakness" title="8term.py.weakness">weakness</a></small><br /><a class="index indexlev2" href="#Download" title="Download">Download</a><br /><a class="index indexlev2" href="#TODO" title="TODO">TODO</a><br /><a class="index indexlev2" href="#Screenshots" title="Screenshots">Screenshots</a><br /></div><hr /><a name="Problem"></a><h2>Problem
+</h2>
+<p>
+<a class="a" href="http://octoprint.org/" title="remote link: http://octoprint.org/" target="_blank">OctoPrint</a> is a&nbsp;neat software used as a&nbsp;web-operated printserver
+for <a class="w" href="https://en.wikipedia.org/wiki/3D_printers" title="Wikipedia link: 3D printers" target="_blank">3D printers</a>.
+</p>
+<p>
+Sometimes, however, a&nbsp;commandline control is desired.
+</p>
+<p>
+For command by command noninteractive work, <a class="P" href="https://www.improwis.com/projects/8control" title="local project" target="_blank">8control</a> suite was written in bash.
+</p>
+<p>
+However, the&nbsp;commands do not provide the&nbsp;server's response. Which is occasionally needed.
+</p>
+<hr /><a name="Solutionapproach"></a><h2>Solution approach
+</h2>
+<p>
+The OctoPrint server comes with a&nbsp;powerful <a class="w" href="https://en.wikipedia.org/wiki/Representational_state_transfer" title="Wikipedia link: Representational state transfer" target="_blank">REST</a> <a class="w" href="https://en.wikipedia.org/wiki/Application_programming_interface" title="Wikipedia link: Application programming interface" target="_blank">API</a> accessible
+over the&nbsp;<a class="w" href="https://en.wikipedia.org/wiki/HTTP" title="Wikipedia link: HTTP" target="_blank">HTTP</a> protocol and extensively using <a class="w" href="https://en.wikipedia.org/wiki/JSON" title="Wikipedia link: JSON" target="_blank">JSON</a> format for the&nbsp;data.
+The production version API documentation is <a class="a" href="https://docs.octoprint.org/en/master/api/index.html" title="remote link: https://docs.octoprint.org/en/master/api/index.html" target="_blank">here</a>.
+</p>
+<p>
+There is also a&nbsp;<a class="w" href="https://en.wikipedia.org/wiki/websocket" title="Wikipedia link: websocket" target="_blank">websocket</a> API. This is documented <a class="a" href="https://docs.octoprint.org/en/master/api/push.html" title="remote link: https://docs.octoprint.org/en/master/api/push.html" target="_blank">here</a>.
+</p>
+<p>
+Python was chosen for this level of complexity, as the&nbsp;startup time penalty is not worth the&nbsp;necessary cost of not spending
+too much time writing it all in C and bash is too weak.
+</p>
+<hr /><a name="basics"></a><h2> basics
+</h2>
+<a name="config"></a><h3> config
+</h3>
+<p>
+Both 8mon and 8term use the&nbsp;same configuration file format as the&nbsp;8control suite. The file is located at <span class="code">/etc/octocmd.conf</span>
+and is in JSON format. An example is here:
+<pre class="">    "OctoAPI_KEY": "0C59XXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "OctoPrint_URL": "http://printer:5000"
+}
+</pre></p>
+<p>
+The API key can be provided by the&nbsp;Octoprint UI.
+The URL is the&nbsp;address of the&nbsp;machine. Can be domain name, can be a&nbsp;raw IP address.
+</p>
+<p>
+The URL is converted to the&nbsp;websocket one by replacing <span class="code">http://</span> with <span class="code">ws://</span>.
+</p>
+<a name="websocket"></a><h3> websocket
+</h3>
+<p>
+The websocket data come in the&nbsp;form of JSON blocks. A fairly large amount of data flows in, with every state change
+the server reports to the&nbsp;web browser interface.
+</p>
+<p>
+The gcode logs, of Send and Recv streams, arrive in the&nbsp;<span class="code"> ['current']['logs'] </span> array.
+</p>
+<p>
+The machine events arrive in the&nbsp;<span class="code"> ['events'] </span> array.
+</p>
+<p>
+The data come in fixed intervals. More than one gcode line can come in the&nbsp;same event.
+</p>
+<p>
+The websocket access is done via <a class="a" href="https://websockets.readthedocs.io/" title="remote link: https://websockets.readthedocs.io/" target="_blank">websockets</a> library.
+</p>
+<a name="RESTAPI"></a><h3> REST API
+</h3>
+<p>
+The API is needed for handling the&nbsp;login, and eventual other commands. The commands get submitted
+to the&nbsp;server via a&nbsp;HTTP request. The command responses are retrieved via websocket.
+</p>
+<p>
+The API access is done via <a class="a" href="https://pypi.org/project/requests/" title="remote link: https://pypi.org/project/requests/" target="_blank">requests</a> library.
+</p>
+<hr /><a name="8mon.py"></a><h2> 8mon.py
+</h2>
+<p>
+8mon.py is the&nbsp;noninteractive websocket/REST client.
+</p>
+<p>
+The command can provide monitoring of the&nbsp;gcode communication, the&nbsp;events,
+or the&nbsp;entire communication (which gets pretty spammy).
+</p>
+<p>
+It can also send a&nbsp;command to the&nbsp;machine, and display its response.
+</p>
+<p>
+CAVEAT: the&nbsp;code compares the&nbsp;command sent in with content of the&nbsp;Sent: line, then shows everything from that to Recv: ok.
+Octoprint rewrites/substitutes some G/M codes. In these cases, the&nbsp;code won't return data and will be killed by a&nbsp;timeout.
+</p>
+<a name="usage"></a><h3> usage
+</h3>
+<p>
+On startup, 8mon reads the&nbsp;config file, connects to the&nbsp;websocket of the&nbsp;server mentioned there,
+authorizes itself with the&nbsp;API key, subscribes to events and current streams on websocket, and
+shows the&nbsp;incoming data.
+</p>
+<p>
+If told, also sends a&nbsp;command.
+The commands are converted to uppercase. (Beware, some commands like M117&nbsp;and G7&nbsp;have case-sensitive
+data. This will break them.)
+</p>
+<a name="options"></a><h4> options
+</h4>
+<pre class="preFile">Usage: ./8mon.py [-a] [-s] [-v] [-v] [-v] [-tTIMEOUT] [-C/config/file] [command]
+Parameters:
+  -a        show all messages
+  -s        show separators between messages
+  -v        increase verbosity, up to 2 times
+  -t&lt;num&gt;   timeout in seconds
+  -C/file   config file location, default /etc/octocmd.conf
+  -h        this help
+  --help    this help
+  command   gcode command to get the response
+
+</pre><p>
+For easier parsing, there are no spaces between option and value.
+</p>
+<a name="example"></a><h4> example
+</h4>
+<div class="cmd"> 8mon.py m114</div><div class="cmdresp"> Send: M114</div><div class="cmdresp"> {'event': {'type': 'PositionUpdate', 'payload': {'reason': None, 'e': 0.0, 'x': 68.06, 'y': 62.24, 'f': 367.3464610996, 't': 0, 'z': 0.0}}}</div><div class="cmdresp"> Recv: X:68.06&nbsp;Y:62.24&nbsp;Z:0.00&nbsp;E:0.00&nbsp;Count X: 32156&nbsp;Y:21476&nbsp;Z:0</div><div class="cmdresp"> Recv: ok</div><div class="cmd">  8mon.py</div><div class="cmdresp"> ### Opening websocket to: ws://laser:5000/sockjs/websocket</div><div class="cmdresp"> ### waiting for events, gcode</div><div class="cmdresp"> ### Opened connection</div><div class="cmdresp"> Recv: echo:busy: processing</div><div class="cmdresp"> Recv: echo:busy: processing</div><div class="cmdresp"> Recv: ok</div><div class="cmdresp"> Recv: echo:endstops hit:  Y:5.90</div><div class="cmdresp"> Send: N5&nbsp;G0&nbsp;X0.8954578544&nbsp;Y0.0000000000&nbsp;Z0.0000000000&nbsp;F261.9211735748*58</div><div class="cmdresp"> Recv: ok</div><div class="cmdresp"> Send: N6&nbsp;G0&nbsp;X3.5309134035&nbsp;Y0.0000000000&nbsp;Z0.0000000000&nbsp;F220.2485759381*52</div><div class="cmdresp"> Recv: ok</div><div class="cmdresp"> Send: N7&nbsp;G0&nbsp;X4.2839007032&nbsp;Y0.0000000000&nbsp;Z0.0000000000&nbsp;F220.2485759381*59</div><div class="cmdresp"> Recv: ok</div><div class="cmdresp"> Send: N8&nbsp;G0&nbsp;X5.0816629578&nbsp;Y0.0000000000&nbsp;Z0.0000000000&nbsp;F233.3452377916*62</div><div class="cmdresp"> Recv: ok</div><div class="cmdresp"> Send: N9&nbsp;G0&nbsp;X5.9771208121&nbsp;Y0.0000000000&nbsp;Z0.0000000000&nbsp;F261.9211735748*60</div><div class="cmdresp"> Recv: ok</div><div class="cmdresp"> ^C### ERROR:  &lt;class 'KeyboardInterrupt'&gt;</div><div class="cmdresp"> ### closed ###</div><hr /><a name="8term.py"></a><h2> 8term.py
+</h2>
+<p>
+8term.py is an interactive terminal for the&nbsp;gcode, the&nbsp;console somewhat equivalent of the&nbsp;"Terminal" window of the&nbsp;web interface.
+The terminal has color syntax highlighting.
+</p>
+<p>
+The code uses the&nbsp;same general approach as 8mon does, with <a class="a" href="https://python-prompt-toolkit.readthedocs.io/en/master/" title="remote link: https://python-prompt-toolkit.readthedocs.io/en/master/" target="_blank">prompt_toolkit</a> library
+for general interactive screens, and <a class="a" href="https://pygments.org/" title="remote link: https://pygments.org/" target="_blank">pygments</a> as lexer and syntax highlighter.
+</p>
+<p>
+The modified gcode lexer and the&nbsp;associated color style were integrated to the&nbsp;main file, to avoid multifile dependencies
+and allow easy portability.
+</p>
+<a name="8term.py.usage"></a><h3> usage
+</h3>
+<p>
+On startup, 8term reads the&nbsp;config file, connects to the&nbsp;websocket of the&nbsp;server mentioned there,
+authorizes itself with the&nbsp;API key, subscribes to events and current streams on websocket, and
+shows the&nbsp;incoming data on the&nbsp;top window.
+</p>
+<p>
+The bottom window acts as the&nbsp;input console. A command entered there is sent via the&nbsp;REST API.
+</p>
+<p>
+If the&nbsp;first command letter is lowercase, the&nbsp;command as a&nbsp;whole is converted to uppercase.
+Beware, some commands like M117&nbsp;and G7&nbsp;have case-sensitive data. This will break them.
+An uppercase G or M (or other letter) will signal to the&nbsp;software it should not translate case.
+</p>
+<p>
+Command sent as parameter from the&nbsp;console will be uppercased regardless. (TODO: address.)
+</p>
+<a name="8term.py.usage.options"></a><h4> options
+</h4>
+<pre class="preFile">Usage: ./8term.py [-a] [-s] [-v] [-v] [-v] [-tTIMEOUT] [-C/config/file] [command]
+Parameters:
+  -v        increase verbosity, up to 2 times
+  -C/file   config file location, default /etc/octocmd.conf
+  -h        this help
+  --help    this help
+  command   gcode command to get the response
+
+</pre><p>
+For easier parsing, there are no spaces between option and value.
+</p>
+<a name="keys"></a><h4> keys
+</h4>
+<ul><li> <span class="code">Ctrl-C</span>, <span class="code">Ctrl-D</span> - quit
+</li><li> <span class="code">Tab</span>, <span class="code">Ctrl-W</span> - switch between top and bottom window
+</li><li> <span class="code">PgUp</span>, <span class="code">PgDn</span> - if the&nbsp;top window is focused, scroll through the&nbsp;history
+</li></ul><a name="commands"></a><h4> commands
+</h4>
+<ul><li> process
+</li><ul><li> <span class="code">/start</span> - starts job
+</li><li> <span class="code">/pause</span> - pauses running job
+</li><li> <span class="code">/resume</span> - resumes running job
+</li><li> <span class="code">/cancel</span> - cancels running job
+</li></ul><li> position
+</li><ul><li> <span class="code">/home</span> - G28, homes the&nbsp;machine
+</li></ul><li> machine
+</li><ul><li> <span class="code">/on</span> - M80, power-on the&nbsp;machine
+</li><li> <span class="code">/off</span> - M81, power-off the&nbsp;machine
+</li></ul></ul><a name="weakness"></a><h3> weakness
+</h3>
+<p>
+The code gets slower at too many thousand gcode lines.
+</p>
+<hr /><a name="Download"></a><h2>Download
+</h2>
+<ul><li> <a class="F" href="8mon.py" title="local file">8mon.py</a>
+</li><li> <a class="F" href="8term.py" title="local file">8term.py</a>
+</li></ul><hr /><a name="TODO"></a><h2>TODO
+</h2>
+<ul><li> more commands
+</li><li> better error handling
+</li><li> find out why slow, or add manual clearing of the&nbsp;console
+</li><li> file upload/run handling
+</li><li> case handling for commands
+</li><li> logfile load/save with filenames
+</li></ul><hr /><a name="Screenshots"></a><h2>Screenshots
+</h2>
+<table class="images" border="0"><tr>
+<td valign="top" class="imgthumb" width="640"><a title="Click here to enlarge" href="8term-screenshot1.png"><img src="th.8term-screenshot1.png" width="640" height="376" /></a><br/></td><td valign="top" class="imgthumb" width="640"><a title="Click here to enlarge" href="8term-screenshot3.png"><img src="th.8term-screenshot3.png" width="640" height="375" /></a><br/></td><td></td><td></td></tr></table><!-- feedback -->
+<!-- /feedback -->
+</body>
+</html>
